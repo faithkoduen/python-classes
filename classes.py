@@ -36,33 +36,32 @@ class Account:
             print("Insufficient funds or invalid amount for transfer.")
 
  def loan(self, amount):
-      if self.loan_balance == 0:
+       if self.loan_balance == 0:
         self.loan_balance = amount
         self.balance += amount
         self.loan_history.append(f"Loan taken: {amount}, Outstanding loan: {self.loan_balance}")
         print(f"Loan taken: {amount}, Outstanding loan: {self.loan_balance}, Current balance: {self.balance}")
-      else:
+       else:
         print("Outstanding loan exists. Repay it first.")
 
  def repay_loan(self, amount):
-        if amount <= self.loan_balance and amount > 0 :
+       if amount <= self.loan_balance and amount > 0 :
           self.loan_balance -= amount
           self.balance -= amount
           self.loan_history.append(f"Loan repaid: {amount}, Remaining loan: {self.loan_balance}")
           print(f"Loan repaid: {amount}, Remaining loan: {self.loan_balance}, Current balance: {self.balance}")
-        elif amount > self.loan_balance:
+       elif amount > self.loan_balance:
             print(f"Amount exceeds outstanding loan. Remaining loan {self.loan_balance}")
-        else:
+       else:
           print("Invalid amount.")
-
- def get_statement(self):
-        print("Statement:")
-        for transaction in self.deposits + self.withdrawals:
+def get_statement(self):
+       print("Statement:")
+       for transaction in self.deposits + self.withdrawals:
             print(transaction)
 
- def get_loan_statement(self):
-      print("Loan Statement:")
-      for record in self.loan_history:
+def get_loan_statement(self):
+       print("Loan Statement:")
+       for record in self.loan_history:
         print(record)
 def interest_calculation(self):
         interest=self.balance * 0.05
@@ -94,3 +93,40 @@ def close_account(self):
 def account_statement(self):
         for statement in self.statements:
             return self.statements
+        
+
+
+from datetime import datetime
+class Transaction:
+    def __init__(self, narration, amount, transaction_type):
+        self.date_time = datetime.now()
+        self.narration = narration
+        self.amount = amount
+        self.transaction_type = transaction_type 
+    def __str__(self):
+        return f"{self.date_time} - {self.transaction_type.title()}: {self.amount} ({self.narration})"
+class Account:
+    def __init__(self, account_number, initial_balance=0):
+        self.__account_number = account_number
+        self.__balance = initial_balance
+        self.__transactions = []
+    def deposit(self, amount, narration="Deposit"):
+        if amount > 0:
+            self.__balance += amount
+            transaction = Transaction(narration, amount, "deposit")
+            self.__transactions.append(transaction)
+        else:
+            raise ValueError("Deposit amount must be positive")
+    def withdraw(self, amount, narration="Withdrawal"):
+        if amount > 0 and amount <= self.__balance:
+            self.__balance -= amount
+            transaction = Transaction(narration, amount, "withdrawal")
+            self.__transactions.append(transaction)
+        else:
+            raise ValueError("Invalid withdrawal amount")
+    def get_balance(self):
+        return self.__balance
+    def get_account_number(self):
+        return self.__account_number
+    def get_transaction_history(self):
+        return [str(t) for t in self.__transactions]
